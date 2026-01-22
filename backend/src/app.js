@@ -45,6 +45,7 @@ app.use(limiter);
 // 2. Helmet: Adds security headers to protect against common web vulnerabilities.
 app.use(helmet());
 
+console.log("CORS allowed origin (VITE_CLIENT_URL) =", envVar.VITE_CLIENT_URL);
 // 3. CORS: Allows your frontend to communicate with this backend.
 app.use(cors({
   origin: envVar.VITE_CLIENT_URL,
