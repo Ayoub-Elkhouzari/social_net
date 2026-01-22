@@ -3,10 +3,10 @@ const envVar = require('./EnvVariable');
 
 /**
  * MinIO Client Configuration
- * 
+ *
  * Initializes the MinIO client using environment variables.
  * This client is used throughout the application for object storage operations.
- * 
+ *
  * Configuration:
  * - endPoint: MinIO server hostname (without protocol)
  * - port: MinIO server port (default: 9000)
@@ -25,12 +25,16 @@ const minioClient = new Minio.Client({
 /**
  * Validates MinIO connection by attempting to list buckets with retry logic
  * This is called during server startup to handle delays in container readiness
- * 
+ *
  * @param {number} retries - Number of retry attempts
  * @param {number} delay - Delay between retries in ms
  * @returns {Promise<boolean>} True if connection is successful
  */
 async function validateConnection(retries = 5, delay = 2000) {
+    console.log("MINIO_ENDPOINT =", envVar.MINIO_ENDPOINT);
+    console.log("MINIO_PORT =", envVar.MINIO_PORT);
+    console.log("MINIO_USE_SSL =", envVar.MINIO_USE_SSL);
+
   for (let i = 0; i < retries; i++) {
     try {
       await minioClient.listBuckets();
