@@ -20,7 +20,7 @@ import axios from 'axios';
  */
 console.log("VITE_API_BASE_URL =", import.meta.env.VITE_API_BASE_URL);
 const api = axios.create({
-  baseURL: "https://backend-production-1f98.up.railway.app/api" || 'http://localhost:8080/api', // Backend API URL
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api', // Backend API URL
   withCredentials: true, // CRITICAL: Allows sending/receiving cookies (for refresh token)
   headers: {
     // Let axios set Content-Type automatically based on the request body

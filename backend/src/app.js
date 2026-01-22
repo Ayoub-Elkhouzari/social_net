@@ -47,7 +47,7 @@ app.use(helmet());
 
 // 3. CORS: Allows your frontend to communicate with this backend.
 app.use(cors({
-  origin: "https://frontend-production-9a8f.up.railway.app",
+  origin: envVar.VITE_CLIENT_URL,
   credentials: true, // Crucial for sending/receiving cookies (JWT)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
