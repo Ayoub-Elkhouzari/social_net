@@ -1,8 +1,8 @@
 /**
  * app.js - The Brain of the Express Application
- * 
+ *
  * Think of this file as the "Receptionist & Security Guard."
- * It defines how every request coming into the server is handled, 
+ * It defines how every request coming into the server is handled,
  * what security checks it goes through, and which "department" (route) it should go to.
  */
 
@@ -23,7 +23,7 @@ const followerRoute = require("./routes/follow.route");
 const notificationRoute = require("./routes/notification.route");
 
 const app = express();
-
+app.set("trust proxy", 1);
 /**
  * MIDDLEWARE CONFIGURATION
  * Middleware are functions that run 'in the middle' of receiving a request and sending a response.
@@ -47,7 +47,7 @@ app.use(helmet());
 
 // 3. CORS: Allows your frontend to communicate with this backend.
 app.use(cors({
-  origin: envVar.VITE_CLIENT_URL, 
+  origin: "https://frontend-production-9a8f.up.railway.app",
   credentials: true, // Crucial for sending/receiving cookies (JWT)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -93,7 +93,7 @@ app.use((err, req, res, next) => {
       message: err.message
     });
   }
-  
+
   console.error('Unhandled Error:', err);
   res.status(err.status || 500).json({
     success: false,
