@@ -1,9 +1,9 @@
 /**
  * api.js - The HTTP Client Configuration
- * 
+ *
  * This file creates and configures an Axios instance that all API calls use.
  * Think of it as the "Messenger" that carries requests to the backend.
- * 
+ *
  * Key Features:
  * - Automatically adds authentication tokens to requests
  * - Handles token refresh when access token expires
@@ -15,9 +15,10 @@ import axios from 'axios';
 
 /**
  * CREATE AXIOS INSTANCE
- * 
+ *
  * This is our customized HTTP client with default settings.
  */
+console.log("VITE_API_BASE_URL =", import.meta.env.VITE_API_BASE_URL);
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api', // Backend API URL
   withCredentials: true, // CRITICAL: Allows sending/receiving cookies (for refresh token)
@@ -29,7 +30,7 @@ const api = axios.create({
 
 /**
  * REQUEST INTERCEPTOR
- * 
+ *
  * This runs BEFORE every request is sent.
  * It automatically attaches the authentication token to the request headers.
  */
@@ -37,12 +38,12 @@ api.interceptors.request.use(
   (config) => {
     // Get the access token from localStorage
     const token = localStorage.getItem('token');
-    
+
     // If token exists, add it to the Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config; // Send the modified request
   },
   (error) => {
@@ -53,7 +54,7 @@ api.interceptors.request.use(
 
 /**
  * RESPONSE INTERCEPTOR
- * 
+ *
  * This runs AFTER every response is received.
  * It handles:
  * 1. Data extraction (unwrapping the backend's response format)
@@ -64,7 +65,7 @@ api.interceptors.response.use(
   (response) => {
     /**
      * DATA EXTRACTION
-     * 
+     *
      * Backend wraps data in this format: { success: true, data: {...} }
      * We extract just the 'data' part for cleaner usage in services.
      */
@@ -78,7 +79,7 @@ api.interceptors.response.use(
 
     /**
      * HANDLE 401 UNAUTHORIZED (Token Expired)
-     * 
+     *
      * When the access token expires, the backend returns 401.
      * We try to refresh the token using the refresh token (stored in HttpOnly cookie).
      * If successful, we retry the original request with the new token.
@@ -90,7 +91,7 @@ api.interceptors.response.use(
       !originalRequest.url.includes('/auth/register') // Not a register request?
     ) {
       originalRequest._retry = true; // Mark that we're retrying
-      
+
       try {
         // Try to refresh the access token
         const response = await axios.post(
@@ -98,21 +99,21 @@ api.interceptors.response.use(
           {}, // Body not needed (refresh token is in HttpOnly cookie)
           { withCredentials: true } // CRITICAL: Send cookies with this request
         );
-          
+
         // Extract the new access token from the response
         const accessToken = response.data?.data?.accessToken || response.data?.accessToken;
-        
+
         // Save the new token to localStorage
         localStorage.setItem('token', accessToken);
-          
+
         // Retry the original request with the new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest); // Retry!
-        
+
       } catch (refreshError) {
         /**
          * REFRESH FAILED - Logout User
-         * 
+         *
          * If refresh token is also invalid/expired, the user needs to log in again.
          * Clear all auth data and redirect to home page.
          */
@@ -131,4 +132,3 @@ api.interceptors.response.use(
 
 // Export the configured axios instance
 export default api;
-
