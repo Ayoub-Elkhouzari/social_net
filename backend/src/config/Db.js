@@ -20,10 +20,10 @@ const connectDB = async () => {
     // if (process.env.SYNC_INDEXES === "true") {
     //   console.log("SYNC_INDEXES=true -> syncing MongoDB indexes...");
 
-      const User = require("../models/user.model");
+    //   const User = require("../models/user.model");
     //   const Thread = require("../models/thread.model");
 
-      await User.syncIndexes();
+    //   await User.syncIndexes();
     //   await Thread.syncIndexes();
 
     //   console.log("✓ MongoDB indexes synced");
