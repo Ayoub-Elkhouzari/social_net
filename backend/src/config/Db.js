@@ -6,42 +6,45 @@
  * Think of Mongoose as a "Translator" that lets us talk to MongoDB using JavaScript objects.
  */
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const envVar = require("./EnvVariable");
 
 const connectDB = async () => {
   try {
-    // Attempt to connect to MongoDB using the URI from our environment variables
-    const conn = await mongoose.connect(envVar.MONGODB_URI,{autoIndex: true});
+    const conn = await mongoose.connect(envVar.MONGODB_URI, { autoIndex: false });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     console.log(`Database: ${conn.connection.name}`);
 
-    // Listen for connection errors after initial connection
-    mongoose.connection.on('error', err => {
+    // ✅ Sync indexes ONE-TIME when you want (set env var on Railway)
+    if (process.env.SYNC_INDEXES === "true") {
+      console.log("SYNC_INDEXES=true -> syncing MongoDB indexes...");
+
+      const User = require("../models/user.model");
+      const Thread = require("../models/thread.model");
+
+      await User.syncIndexes();
+      await Thread.syncIndexes();
+
+      console.log("✓ MongoDB indexes synced");
+    }
+
+    mongoose.connection.on("error", (err) => {
       console.error(`MongoDB connection error: ${err}`);
     });
 
-    // Listen for disconnection events
-    mongoose.connection.on('disconnected', () => {
-      console.log('MongoDB disconnected');
+    mongoose.connection.on("disconnected", () => {
+      console.log("MongoDB disconnected");
     });
 
-    /**
-     * Graceful Shutdown
-     * If you stop the server (Ctrl+C), this ensures the database connection is
-     * closed cleanly before the process exits.
-     */
-    process.on('SIGINT', async () => {
+    process.on("SIGINT", async () => {
       await mongoose.connection.close();
-      console.log('MongoDB connection closed through app termination');
+      console.log("MongoDB connection closed through app termination");
       process.exit(0);
     });
-
   } catch (error) {
-    // If the initial connection fails, log why and stop the whole server
     console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1); // 1 = Exit with failure
+    process.exit(1);
   }
 };
 
