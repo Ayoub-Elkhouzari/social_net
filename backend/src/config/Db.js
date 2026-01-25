@@ -18,15 +18,15 @@ const connectDB = async () => {
 
     // ✅ Sync indexes ONE-TIME when you want (set env var on Railway)
     // if (process.env.SYNC_INDEXES === "true") {
-      console.log("SYNC_INDEXES=true -> syncing MongoDB indexes...");
+    //   console.log("SYNC_INDEXES=true -> syncing MongoDB indexes...");
 
-      const User = require("../models/user.model");
-      const Thread = require("../models/thread.model");
+    //   const User = require("../models/user.model");
+    //   const Thread = require("../models/thread.model");
 
-      await User.syncIndexes();
-      await Thread.syncIndexes();
+    //   await User.syncIndexes();
+    //   await Thread.syncIndexes();
 
-      console.log("✓ MongoDB indexes synced");
+    //   console.log("✓ MongoDB indexes synced");
     // }
 
     mongoose.connection.on("error", (err) => {
