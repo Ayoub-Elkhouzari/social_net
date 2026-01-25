@@ -12,7 +12,7 @@ const envVar = require("./EnvVariable");
 const connectDB = async () => {
   try {
     // Attempt to connect to MongoDB using the URI from our environment variables
-    const conn = await mongoose.connect(envVar.MONGODB_URI,{autoIndex: false});
+    const conn = await mongoose.connect(envVar.MONGODB_URI,{autoIndex: true});
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     console.log(`Database: ${conn.connection.name}`);
