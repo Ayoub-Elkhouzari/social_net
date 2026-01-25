@@ -11,7 +11,7 @@ const envVar = require("./EnvVariable");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(envVar.MONGODB_URI, { autoIndex: false });
+    const conn = await mongoose.connect(envVar.MONGODB_URI, { autoIndex: true });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     console.log(`Database: ${conn.connection.name}`);
