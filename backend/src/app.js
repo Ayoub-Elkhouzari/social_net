@@ -46,6 +46,8 @@ app.use(limiter);
 app.use(helmet());
 
 console.log("CORS allowed origin (VITE_CLIENT_URL) =", envVar.VITE_CLIENT_URL);
+console.log("ACCESS_TOKEN_SECRET =", envVar.ACCESS_TOKEN_SECRET);
+console.log("REFRESH_TOKEN_SECRET =", envVar.REFRESH_TOKEN_SECRET);
 // 3. CORS: Allows your frontend to communicate with this backend.
 app.use(cors({
   origin: envVar.VITE_CLIENT_URL,
