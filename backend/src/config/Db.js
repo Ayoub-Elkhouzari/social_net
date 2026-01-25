@@ -17,7 +17,7 @@ const connectDB = async () => {
     console.log(`Database: ${conn.connection.name}`);
 
     // ✅ Sync indexes ONE-TIME when you want (set env var on Railway)
-    if (process.env.SYNC_INDEXES === "true") {
+    // if (process.env.SYNC_INDEXES === "true") {
       console.log("SYNC_INDEXES=true -> syncing MongoDB indexes...");
 
       const User = require("../models/user.model");
@@ -27,7 +27,7 @@ const connectDB = async () => {
       await Thread.syncIndexes();
 
       console.log("✓ MongoDB indexes synced");
-    }
+    // }
 
     mongoose.connection.on("error", (err) => {
       console.error(`MongoDB connection error: ${err}`);
