@@ -6,7 +6,7 @@ const { statusCodes } = require('../utils/statusCodes');
 const search = async (req, res) => {
   try {
     const { q, type } = req.query; // type can be 'top', 'latest', 'people', 'media'
-    
+
     if (!q || q.trim().length === 0) {
       return responseHandler.success(res, { users: [], threads: [] }, 'Empty query');
     }
@@ -86,7 +86,7 @@ const search = async (req, res) => {
       .limit(20)
       .populate('author', '_id firstName lastName avatar avatarType')
       .lean();
-      
+
       if (threads.length < 5) {
           const regexThreads = await Thread.find({
              content: { $regex: regex },
@@ -153,6 +153,7 @@ const search = async (req, res) => {
     );
 
   } catch (error) {
+    console.error("[SEARCH ERROR]", error);
     return responseHandler.error(res, 'Search failed', statusCodes.INTERNAL_SERVER_ERROR);
   }
 };
